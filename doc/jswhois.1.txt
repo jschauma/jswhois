@@ -4,7 +4,7 @@ NAME
      jswhois -- whois lookup results in json format
 
 SYNOPSIS
-     jswhois [-RQVjlv] [-h host] [-p port] domain
+     jswhois [-QRVlv] [-h host] [-p port] domain
 
 DESCRIPTION
      The jswhois tool performs whois(1) lookups and prints results in JSON
@@ -105,4 +105,4 @@ HISTORY
 BUGS
      Please file bugs and feature requests by emailing the author.
 
-NetBSD 8.0		       January 07, 2022			    NetBSD 8.0
+NetBSD 8.0		       January 09, 2022			    NetBSD 8.0

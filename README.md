@@ -27,7 +27,7 @@ NAME
      jswhois -- whois lookup results in json format
 
 SYNOPSIS
-     jswhois [-RQVjlv] [-h host] [-p port] domain
+     jswhois [-QRVlv] [-h host] [-p port] domain
 
 DESCRIPTION
      The jswhois tool performs whois(1) lookups and prints results in JSON
