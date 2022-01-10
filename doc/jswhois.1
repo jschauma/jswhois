@@ -1,0 +1,149 @@
+.Dd January 07, 2022
+.Dt jswhois 1
+.Os
+.Sh NAME
+.Nm jswhois 
+.Nd whois lookup results in json format
+.Sh SYNOPSIS
+.Nm
+.Op Fl RQVjlv
+.Op Fl h Ar host
+.Op Fl p Ar port
+.Ar domain
+.Sh DESCRIPTION
+The
+.Nm
+tool performs
+.Xr whois 1
+lookups and prints results in JSON format.
+.Pp
+Since the WHOIS protocol notoriously does not include
+a specification of the WHOIS data's format or how
+recursive discovery should be handled, the results --
+much like the results of the normal
+.Xr whois 1
+command -- tend to vary significantly.
+.Sh OPTIONS
+The following options are supported by
+.Nm :
+.Bl -tag -width h_host_
+.It Fl Q
+Do a quick lookup;
+.Nm
+will not attempt to follow referrals to other whois
+servers.
+This is the default if a server is explicitly
+specified via the
+.Fl h
+flag.
+See also the
+.Fl R
+option.
+.It Fl R
+Do a recursive lookup;
+.Nm
+will attempt to follow referrals to other whois
+servers.
+This is the default if
+.Fl h
+is not specified.
+See also the
+.Fl Q
+option.
+.It Fl V
+Print version information and exit.
+.It Fl h Ar host
+Use the specified host instead of the default
+(whois.iana.org).
+.It Fl l
+Only print results from the last WHOIS server queried.
+.It Fl p Ar port
+Connect to the whois server on
+.Ar port.
+If this option is not specified,
+.Nm
+defaults to port 43.
+.It Fl v
+Be verbose.
+Can be specified multiple times.
+.El
+.Sh DETAILS
+WHOIS information is notoriously unpredictably
+structured and hard to parse.
+In order to process WHOIS data with even a shred of
+hope of not getting lost in terrible regular
+expressions and shell pipelines and yet without
+relying on proprietary APIs
+.Nm
+will attempt to reformat the text output in a coherent
+JSON object.
+.Pp
+The query for any domain will always begin at
+\'whois.iana.org\' and then recurse as per the data
+encountered.
+The resulting JSON document will then contain nested
+structures indexed by the name of the WHOIS server in
+question.
+.Pp
+Since the data is fundamentally unstructured, attempts
+to stuff them into JSON formatting is made as outlined
+below:
+.Pp
+.Bl -bullet -compact
+.It
+repeated fields are turned into a list
+.It
+a chain of WHOIS servers queried is added to the top
+object
+.Ed
+.Sh EXAMPLES
+To display the WHOIS information for the domain
+\'netmeister.org\':
+.Bd -literal -offset indent
+$ jswhois netmeister.org | jq
+{
+  "query": "netmeister.org",
+  "chain": [
+    "whois.iana.org",
+    "whois.pir.org",
+    "whois.gandi.net"
+  ],
+  "whois.iana.org": {
+    "domain": "ORG"
+    "organisation": {
+      "name": "Public Interest Registry (PIR)",
+      "address": [
+        "11911 Freedom Drive 10th Floor,",
+        "Suite 1000",
+        "Reston, VA 20190",
+        "United States"
+      ]
+    },
+    "contact": [ {
+      "name": "administrative",
+      ...
+    }, ... ]
+  }
+  "whois.pir.org": {
+    "Domain Name": "NETMEISTER.ORG",
+    ...
+  },
+  "whois.gandi.net": {
+    "Domain Name": "netmeister.org",
+    ...
+  }
+}
+.Ed
+.Sh EXIT STATUS
+.Ex -std 
+.Sh SEE ALSO
+.Xr whois 1 ,
+.Xr jq 1
+.Sh HISTORY
+.Nm
+was originally written by
+.An Jan Schaumann
+.Aq jschauma@netmeister.org
+in December 2021.
+.Sh BUGS
+Please file bugs and feature requests by emailing the author.
