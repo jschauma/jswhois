@@ -3,6 +3,10 @@
 `jswhois(1)` is a tool to look up and print WHOIS
 results in JSON format.
 
+For a bit more context around WHOIS and the
+unstructured nature this tool tries to wrangle, please
+see: https://www.netmeister.org/blog/whois.html
+
 ## Installation
 
 `jswhois(1)` is written in Go, so you'll need that.
