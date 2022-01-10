@@ -411,7 +411,7 @@ func argcheck(flag string, args []string, i int) {
  * By and large the logic goes somewhat like this:
  *
  * Try to parse line-by-line and identify key-value
- * pairs based on the whois server's know or
+ * pairs based on the whois server's known or
  * speculated format and regex.
  *
  * 'key: val' becomes simply '"key" : "val"'; but:
