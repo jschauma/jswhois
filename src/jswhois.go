@@ -28,7 +28,7 @@ import (
 )
 
 const PROGNAME = "jswhois"
-const VERSION = "1.0"
+const VERSION = "1.1"
 
 const EXIT_FAILURE = 1
 const EXIT_SUCCESS = 0
@@ -1140,13 +1140,6 @@ func getopts() {
 
 		os.Args = os.Args[1:]
 	}
-
-	if len(os.Args) != 1 {
-		usage(os.Stderr)
-		os.Exit(EXIT_FAILURE)
-	}
-
-	OUTPUT["query"] = os.Args[0]
 }
 
 func hasMarker(list map[string]bool, line string) (yesno bool) {
@@ -1161,9 +1154,26 @@ func hasMarker(list map[string]bool, line string) (yesno bool) {
 }
 
 func lookupWhois() {
+
+	var allOutput = []map[string]interface{}{}
+	verbose(1, "Looking up %d names...", len(os.Args))
+
+	for _, q := range os.Args {
+		OUTPUT = map[string]interface{}{}
+		OUTPUT["query"] = q
+		allOutput = append(allOutput, oneLookup())
+	}
+
+	j, _ := json.Marshal(allOutput)
+	fmt.Printf("%s\n", j)
+}
+
+
+func oneLookup() (rval map[string]interface{}) {
+	rval = map[string]interface{}{}
 	query := OUTPUT["query"].(string)
 
-	verbose(1, "Looking up %s...", query)
+	verbose(2, "Looking up %s...", query)
 
 	var chain = []string{DEFAULT_WHOIS}
 	OUTPUT[DEFAULT_WHOIS] = askWhois(DEFAULT_WHOIS, query)
@@ -1185,19 +1195,17 @@ func lookupWhois() {
 
 	OUTPUT["chain"] = chain
 
-	var j []byte
-
 	if LEAF_ONLY {
-		leaf := map[string]interface{}{}
-		leaf["query"] = OUTPUT["query"]
-		leaf["chain"] = chain
-		leaf[chain[len(chain)-1]] = data
-		j, _ = json.Marshal(leaf)
+		rval["query"] = OUTPUT["query"]
+		rval["chain"] = chain
+		rval[chain[len(chain)-1]] = data
 	} else {
-		j, _ = json.Marshal(OUTPUT)
+		rval = OUTPUT
 	}
-	fmt.Printf("%s\n", j)
+
+	return
 }
+
 
 func printVersion() {
 	fmt.Printf("%v version %v\n", PROGNAME, VERSION)
