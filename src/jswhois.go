@@ -28,7 +28,7 @@ import (
 )
 
 const PROGNAME = "jswhois"
-const VERSION = "1.1"
+const VERSION = "1.2"
 
 const EXIT_FAILURE = 1
 const EXIT_SUCCESS = 0
