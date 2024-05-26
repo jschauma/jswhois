@@ -37,6 +37,7 @@ const IANAWHOIS = "whois.iana.org"
 
 var DEFAULT_WHOIS = IANAWHOIS
 var PORT = 43
+var FORCE = false
 var LEAF_ONLY = false
 var OUTPUT = map[string]interface{}{}
 var RECURSIVE = true
@@ -1117,6 +1118,8 @@ func getopts() {
 		case "-V":
 			printVersion()
 			os.Exit(EXIT_SUCCESS)
+		case "-f":
+			FORCE = true
 		case "-h":
 			eatit = true
 			argcheck("-h", args, i)
@@ -1174,6 +1177,8 @@ func oneLookup() (rval map[string]interface{}) {
 	query := OUTPUT["query"].(string)
 
 	verbose(2, "Looking up %s...", query)
+
+	validateQuery(query)
 
 	var chain = []string{DEFAULT_WHOIS}
 	OUTPUT[DEFAULT_WHOIS] = askWhois(DEFAULT_WHOIS, query)
@@ -1264,17 +1269,33 @@ func updateTopOrSubobject(thing interface{}, k, v string) interface{} {
 }
 
 func usage(out io.Writer) {
-	usage := `Usage: %v [-?QRVlpv] [-h server] [-p port]
+	usage := `Usage: %v [-?QRVflpv] [-h server] [-p port]
 	-?         print this help and exit
 	-Q         quick lookup (i.e., do not recurse)
 	-R         recursive lookup (default)
 	-V         print version information and exit
+        -f         force lookups
 	-h server  query this server (default: %s)
         -l         only print output for the last / leaf whois server
         -p port    query the whois server on this port (default: %d)
 	-v         be verbose
 `
 	fmt.Fprintf(out, usage, PROGNAME, IANAWHOIS, PORT)
+}
+
+func validateQuery(query string) {
+	if FORCE {
+		return
+	}
+
+	verbose(3, "Validating %s...", query)
+	if ip := net.ParseIP(query); ip != nil {
+		return
+	}
+
+	if _, err := net.LookupHost(query); err != nil {
+		fail("%s does not resolve; use '-f' to proceed anyway\n", query)
+	}
 }
 
 func verbose(level int, format string, v ...interface{}) {

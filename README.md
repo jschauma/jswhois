@@ -24,10 +24,10 @@ $ make PREFIX=~ install
 ---
 ```
 NAME
-     jswhois -- whois lookup results in json format
+     jswhois - whois lookup results in json format
 
 SYNOPSIS
-     jswhois [-QRVlv] [-h host] [-p port] domain
+     jswhois [-QRVflv] [-h host] [-p port] domain [...]
 
 DESCRIPTION
      The jswhois tool performs whois(1) lookups and prints results in JSON
@@ -35,28 +35,31 @@ DESCRIPTION
 
      Since the WHOIS protocol notoriously does not include a specification of
      the WHOIS data's format or how recursive discovery should be handled, the
-     results -- much like the results of the normal whois(1) command -- tend
-     to vary significantly.
+     results -- much like the results of the normal whois(1) command -- tend to
+     vary significantly.
 
 OPTIONS
      The following options are supported by jswhois:
 
-     -Q	      Do a quick lookup; jswhois will not attempt to follow referrals
-	      to other whois servers.  This is the default if a server is
+     -Q	      Do a quick lookup; jswhois will not attempt to follow referrals to
+	      other whois servers.  This is the default if a server is
 	      explicitly specified via the -h flag.  See also the -R option.
 
-     -R	      Do a recursive lookup; jswhois will attempt to follow referrals
-	      to other whois servers.  This is the default if -h is not speci-
-	      fied.  See also the -Q option.
+     -R	      Do a recursive lookup; jswhois will attempt to follow referrals to
+	      other whois servers.  This is the default if -h is not specified.
+	      See also the -Q option.
 
      -V	      Print version information and exit.
+
+     -f	      Force whois lookups even if the given input is not an IP address
+	      and it doesn't resolve as a hostname.
 
      -h host  Use the specified host instead of the default (whois.iana.org).
 
      -l	      Only print results from the last WHOIS server queried.
 
-     -p port  Connect to the whois server on port. If this option is not spec-
-	      ified, jswhois defaults to port 43.
+     -p port  Connect to the whois server on port. If this option is not
+	      specified, jswhois defaults to port 43.
 
      -v	      Be verbose.  Can be specified multiple times.
 
@@ -68,8 +71,8 @@ DETAILS
      text output in a coherent JSON object.
 
      The query for any domain will always begin at 'whois.iana.org' and then
-     recurse as per the data encountered.  The resulting JSON document will
-     then contain nested structures indexed by the name of the WHOIS server in
+     recurse as per the data encountered.  The resulting JSON document will then
+     contain nested structures indexed by the name of the WHOIS server in
      question.
 
      Since the data is fundamentally unstructured, attempts to stuff them into

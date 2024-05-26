@@ -1,4 +1,4 @@
-.Dd September 28, 2023
+.Dd May 26, 2025
 .Dt jswhois 1
 .Os
 .Sh NAME
@@ -6,7 +6,7 @@
 .Nd whois lookup results in json format
 .Sh SYNOPSIS
 .Nm
-.Op Fl QRVlv
+.Op Fl QRVflv
 .Op Fl h Ar host
 .Op Fl p Ar port
 .Ar domain
@@ -53,6 +53,9 @@ See also the
 option.
 .It Fl V
 Print version information and exit.
+.It Fl f
+Force whois lookups even if the given input is not an
+IP address and it doesn't resolve as a hostname.
 .It Fl h Ar host
 Use the specified host instead of the default
 (whois.iana.org).
@@ -96,7 +99,7 @@ repeated fields are turned into a list
 .It
 a chain of WHOIS servers queried is added to the top
 object
-.Ed
+.El
 .Sh EXAMPLES
 To display the WHOIS information for the domain
 \'netmeister.org\':
