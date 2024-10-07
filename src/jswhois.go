@@ -95,7 +95,7 @@ var FORMAT_PATTERNS = map[string]*regexp.Regexp{
 	 * key3: value3
 	 * key4: value4
 	 */
-	"twoColumnsStrict":       regexp.MustCompile(`^\s*([^\s][^:]+):\s*(.*)$`),
+	"twoColumnsStrict": regexp.MustCompile(`^\s*([^\s][^:]+):\s*(.*)$`),
 
 	/* e.g., whois.dns.pl
 	 *
@@ -147,7 +147,7 @@ var FORMAT_PATTERNS = map[string]*regexp.Regexp{
 	 * [key3]  value3
 	 *         value3-cont
 	 */
-	"twoColumnsBrackets":   regexp.MustCompile(`^(\[?[^\]:]+[\]:])\s*(.+)?`),
+	"twoColumnsBrackets": regexp.MustCompile(`^(\[?[^\]:]+[\]:])\s*(.+)?`),
 
 	/* e.g., whois.nic.uk
 	 *
@@ -159,7 +159,7 @@ var FORMAT_PATTERNS = map[string]*regexp.Regexp{
 	 *   value1
 	 *   value2
 	 */
-	"multiline":            regexp.MustCompile(`^\s*(.*)`),
+	"multiline": regexp.MustCompile(`^\s*(.*)`),
 }
 
 const DEFAULT_FORMAT = "twoColumnsStrict"
@@ -273,7 +273,7 @@ var IGNOREEND_LOOKUP = map[string]bool{
 
 /* Some whois servers begin (or end) object markers
  * or keys with additional strings. */
-var STRIPSTRINGS_LOOKUP = map[string][]string {
+var STRIPSTRINGS_LOOKUP = map[string][]string{
 	"whois.nic.tr": []string{"**"},
 	"whois.nic.lv": []string{"[", "]"},
 }
@@ -320,11 +320,11 @@ func addNewSubobject(thing interface{}, k, v string) []SubObject {
 		s := SubObject{k: v}
 		l = append(l, s)
 	case string:
-		l = append(l, SubObject{ k : []string{ thing.(string), v } })
+		l = append(l, SubObject{k: []string{thing.(string), v}})
 	case []string:
-		l = append(l, SubObject{ k : append(thing.([]string), v) })
+		l = append(l, SubObject{k: append(thing.([]string), v)})
 	case nil:
-		l = append(l, SubObject{ k : v })
+		l = append(l, SubObject{k: v})
 	default:
 		fail("Unexpected new subobject type: %s (|%v|%s|%s|)\n", reflect.TypeOf(thing), thing, k, v)
 	}
@@ -341,7 +341,7 @@ func addToExistingSubobject(thing interface{}, k, v string) interface{} {
 	case []SubObject:
 		return addToLastSubobject(thing.([]SubObject), k, v)
 	case string:
-		return []string{ thing.(string), v }
+		return []string{thing.(string), v}
 	case []string:
 		return append(thing.([]string), v)
 	default:
@@ -451,12 +451,12 @@ func askWhois(server, query string) (data map[string]interface{}) {
 	nsAddrs := SubObject{}
 
 	/* Used in combination with 'twoColumn' to
- 	 * determine whether a single line should be
- 	 * added to the previous entry. */
+	 * determine whether a single line should be
+	 * added to the previous entry. */
 	columns := 0
 
 	/* Effectively a signal that we had an empty
- 	 * line.  Used to create subobjects if needed. */
+	 * line.  Used to create subobjects if needed. */
 	newBlock := false
 
 	/* e.g., ati.tn
@@ -712,11 +712,11 @@ func askWhois(server, query string) (data map[string]interface{}) {
 				subObject = SubObject{}
 				previousKey = key
 
-			/* key: value */
+				/* key: value */
 			} else if len(key) > 0 && currentValue != key {
 				subObject[key] = addVal(subObject[key], currentValue)
 
-			/* continued value */
+				/* continued value */
 			} else if len(currentValue) > 0 && len(previousKey) > 0 {
 				data[previousKey] = addVal(data[previousKey], currentValue)
 			}
@@ -766,7 +766,7 @@ func askWhois(server, query string) (data map[string]interface{}) {
 						goto _END_OF_LOOP
 					} else if len(indentation) < 1 {
 						/* We just hope sub-objects are indented; otherwise,
- 						 * we really can't tell. */
+						 * we really can't tell. */
 						data[key] = addVal(data[key], currentValue)
 					} else {
 						data[objectName] = addToExistingSubobject(data[objectName], key, currentValue)
@@ -976,7 +976,7 @@ func askWhois(server, query string) (data map[string]interface{}) {
 		}
 		previousKey = thisKey
 
-		_END_OF_LOOP:
+	_END_OF_LOOP:
 		if len(line) > 0 {
 			newBlock = false
 		}
@@ -1023,7 +1023,7 @@ func cleanupData(in map[string]interface{}) (out map[string]interface{}) {
 						l := i.([]string)
 						i = l[0]
 					}
-					out[k] = SubObject{ sk: i }
+					out[k] = SubObject{sk: i}
 				}
 			}
 		}
@@ -1171,7 +1171,6 @@ func lookupWhois() {
 	fmt.Printf("%s\n", j)
 }
 
-
 func oneLookup() (rval map[string]interface{}) {
 	rval = map[string]interface{}{}
 	query := OUTPUT["query"].(string)
@@ -1210,7 +1209,6 @@ func oneLookup() (rval map[string]interface{}) {
 
 	return
 }
-
 
 func printVersion() {
 	fmt.Printf("%v version %v\n", PROGNAME, VERSION)
