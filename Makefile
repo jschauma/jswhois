@@ -29,7 +29,7 @@ readme: man
 clean::
 	@rm -fr ${NAME} 
 
-SOURCES= src/${NAME}.go
+SOURCES= ${NAME}.go
 
 ${NAME}: ${SOURCES}
 	go build ${SOURCES}
