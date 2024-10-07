@@ -940,14 +940,18 @@ func askWhois(server, query string) (data map[string]interface{}) {
 			fallthrough
 		case "refer":
 			fallthrough
+		case "referralserver":
+			fallthrough
 		case "registrar whois server":
+			verbose(4, "Parsed \"%s\" referral to %s.", thisKey, currentValue)
 			t := currentValue
 			/* Sometimes a WHOIS server is listed as a URL. */
-			re := regexp.MustCompile(`^(https?://)([^/]+)/?$`)
+			re := regexp.MustCompile(`^(?:(https?|whois)://)([^/]+)/?$`)
 			if m := re.FindStringSubmatch(currentValue); m != nil {
 				t = m[2]
 			}
 			if t != server {
+				verbose(4, "nextWhois = %s", t)
 				nextWhois = t
 			}
 		}
